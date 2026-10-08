@@ -1,0 +1,58 @@
+[
+  {
+    "symbol": "USA500IDXUSD",
+    "days_present": 4250,
+    "n_ticks": 187407482,
+    "n_crossed": 0,
+    "n_nonpositive": 0,
+    "n_dup": 0,
+    "n_gap_days": 2328,
+    "n_gaps": 2525,
+    "first": "2012-01-16 00:00:07.771000+00:00",
+    "last": "2026-07-24 20:14:59.499000+00:00",
+    "expected_weekdays": 4547,
+    "coverage_ratio": 0.9347
+  },
+  {
+    "symbol": "USATECHIDXUSD",
+    "days_present": 4237,
+    "n_ticks": 652482351,
+    "n_crossed": 0,
+    "n_nonpositive": 0,
+    "n_dup": 0,
+    "n_gap_days": 2229,
+    "n_gaps": 2391,
+    "first": "2012-01-19 16:15:29.295000+00:00",
+    "last": "2026-07-24 20:14:59.621000+00:00",
+    "expected_weekdays": 4544,
+    "coverage_ratio": 0.9324
+  },
+  {
+    "symbol": "DEUIDXEUR",
+    "days_present": 4206,
+    "n_ticks": 281120703,
+    "n_crossed": 0,
+    "n_nonpositive": 0,
+    "n_dup": 0,
+    "n_gap_days": 2075,
+    "n_gaps": 2836,
+    "first": "2012-01-19 16:09:15.818000+00:00",
+    "last": "2026-07-24 19:59:59.938000+00:00",
+    "expected_weekdays": 4544,
+    "coverage_ratio": 0.9256
+  },
+  {
+    "symbol": "LIGHTCMDUSD",
+    "days_present": 4160,
+    "n_ticks": 176614812,
+    "n_crossed": 63,
+    "n_nonpositive": 0,
+    "n_dup": 0,
+    "n_gap_days": 2761,
+    "n_gaps": 2953,
+    "first": "2013-01-01 05:44:02.453000+00:00",
+    "last": "2026-07-24 20:59:59.926000+00:00",
+    "expected_weekdays": 4246,
+    "coverage_ratio": 0.9797
+  }
+]

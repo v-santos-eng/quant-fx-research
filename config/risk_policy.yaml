@@ -1,0 +1,12 @@
+# Gestão de risco (Partes 9 e 13). Defaults da pesquisa.
+version: 0
+risk_per_trade_pct: 0.35
+atr_k: [2, 3]
+loss_limits_pct: {day: -2, week: -4, month: -8}
+lot_reduction_at_monthly_pct: 70
+circuit_breaker_mc_percentile: 99
+vol_target_annual_pct: [8, 12]
+kelly_fraction_cap: 0.25
+currency_exposure_limit_units: 2
+correlation_rolling_days: 60
+correlation_merge_threshold: 0.7

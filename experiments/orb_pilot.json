@@ -1,0 +1,17 @@
+[
+  {
+    "instrument": "USOIL",
+    "commission_per_million": 0.0,
+    "spread_pct": "p75",
+    "n_trades": 3416,
+    "trades_per_year": 252.0,
+    "gross_usd": 1887.17,
+    "cost_usd": 17080.0,
+    "net_usd": -15175.95,
+    "win_rate": 0.347,
+    "sharpe_ann": -1.294,
+    "psr": 0.0,
+    "gross_positive": true,
+    "years": 13.6
+  }
+]

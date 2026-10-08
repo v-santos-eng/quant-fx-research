@@ -1,0 +1,25 @@
+{
+  "phase": "2a",
+  "strategy": "mean_reversion",
+  "instrument": "GER40",
+  "commission_per_million": 0.0,
+  "n_configs": 18,
+  "best_config": {
+    "z": 2.0,
+    "stop_atr": 1.5,
+    "warmup_min": 30
+  },
+  "n_trades": 2652,
+  "gross_usd": -57.6,
+  "net_usd": -445.32,
+  "sharpe_ann": -0.448,
+  "psr": 0.0346,
+  "cpcv_oos_sharpe_ann_mean": -0.506,
+  "cpcv_pct_paths_positive": 0.214,
+  "dsr_deflated": 0.0,
+  "mc_maxdd_p99_usd": 1052.58,
+  "realized_maxdd_usd": 663.88,
+  "gross_positive": false,
+  "gate_pass": false,
+  "verdict": "FAIL"
+}

@@ -1,0 +1,7 @@
+# Features estacionárias, normalizadas por vol, < 20 no total (Parte 6). STUB.
+version: 0
+max_features: 20
+indicators: [ATR, Donchian, EMA_slope_dist, ADX]  # Parte 5 (corte final)
+features: []              # definidas a partir da Fase 1
+normalization: vol_normalized
+correlation_audit: true

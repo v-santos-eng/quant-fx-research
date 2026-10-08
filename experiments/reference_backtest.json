@@ -1,0 +1,56 @@
+{
+  "EURUSD": {
+    "symbol": "EURUSD",
+    "n_trades": 380,
+    "net_usd": -5843.5,
+    "win_rate": 0.35,
+    "gross_usd": -4857.1,
+    "cost_usd": 986.39,
+    "max_drawdown_usd": 6279.86
+  },
+  "USDJPY": {
+    "symbol": "USDJPY",
+    "n_trades": 363,
+    "net_usd": -1701.52,
+    "win_rate": 0.361,
+    "gross_usd": -1169.58,
+    "cost_usd": 531.89,
+    "max_drawdown_usd": 3043.18
+  },
+  "GBPUSD": {
+    "symbol": "GBPUSD",
+    "n_trades": 387,
+    "net_usd": -6477.41,
+    "win_rate": 0.341,
+    "gross_usd": -4874.35,
+    "cost_usd": 1603.13,
+    "max_drawdown_usd": 6875.15
+  },
+  "AUDUSD": {
+    "symbol": "AUDUSD",
+    "n_trades": 395,
+    "net_usd": -4688.55,
+    "win_rate": 0.349,
+    "gross_usd": -3529.25,
+    "cost_usd": 1159.37,
+    "max_drawdown_usd": 5701.15
+  },
+  "USDCAD": {
+    "symbol": "USDCAD",
+    "n_trades": 381,
+    "net_usd": -4346.74,
+    "win_rate": 0.346,
+    "gross_usd": -2847.56,
+    "cost_usd": 1499.2,
+    "max_drawdown_usd": 4954.97
+  },
+  "XAUUSD": {
+    "symbol": "XAUUSD",
+    "n_trades": 346,
+    "net_usd": -9615.89,
+    "win_rate": 0.347,
+    "gross_usd": 1392.4,
+    "cost_usd": 11008.27,
+    "max_drawdown_usd": 15179.58
+  }
+}

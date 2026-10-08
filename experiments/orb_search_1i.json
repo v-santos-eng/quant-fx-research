@@ -1,0 +1,24 @@
+{
+  "phase": "1i",
+  "instrument": "GER40",
+  "commission_per_million": 0.0,
+  "n_configs": 81,
+  "best_config": {
+    "or_min": 30,
+    "atr_mult": 1.0,
+    "r_mult": 2.0,
+    "k_range": 0.8
+  },
+  "n_trades": 3329,
+  "gross_usd": 731.39,
+  "net_usd": 243.74,
+  "sharpe_ann": 0.209,
+  "psr": 0.8055,
+  "cpcv_oos_sharpe_ann_mean": 0.186,
+  "cpcv_pct_paths_positive": 0.75,
+  "dsr_deflated": 0.0001,
+  "mc_maxdd_p99_usd": 657.24,
+  "realized_maxdd_usd": 264.64,
+  "gate_pass": false,
+  "verdict": "FAIL"
+}

@@ -1,0 +1,36 @@
+# Modelo de custos de 3 camadas (Parte 1). Broker = Dukascopy (ECN raw + comissão).
+# Dados históricos e execução no MESMO venue (Dukascopy) -> R-02 muito reduzido.
+version: 1
+account:
+  broker: Dukascopy
+  server: Dukascopy-demo-mt5-1
+  company: Dukascopy Bank SA
+  currency: USD
+  type: demo
+  model: ECN            # spread raw + comissão por volume (não markup de spread)
+
+spread:
+  source: measured               # da Dukascopy: histórico (bid/ask dos ticks) + amostra live MT5
+  model: per_hour_per_pair       # percentis p50/p75/p90 por (par, hora UTC)
+  artifact: experiments/spread_model.json   # gerado por research/spread_model.py
+
+commission:
+  source: measured               # tabela Dukascopy Europe (Self Trader/JForex); confirmar rate no MT5
+  model: per_million_usd         # USD por 1 milhão negociado, POR LADO (abertura E fechamento)
+  tiers_usd_per_million:
+    fx:     {under_5k: 35,   band_50k_250k: 18, over_3m: 5}
+    metals: {under_5k: 52.5, band_50k_250k: 27, over_3m: 7.5}
+  assumed_tier: under_5k         # conta pequena/demo; ajustar ao patrimônio real
+  sanity: "all-in EURUSD ~= 0.30 pip raw + ~0.76 pip comissao round-turn ~= 1.06 pip (bate Parte 3)"
+
+swap:
+  source: mt5_live               # lido do broker via research/mt5_client (symbol_info.swap_*)
+  historical: constant_current   # decisão: swap atual constante no backtest 16a...
+  stress_multiplier: 2           # ...com stress ×2 (Parte 8) cobrindo a incerteza histórica
+  triple_day: wednesday
+
+slippage:
+  source: modeled                # NÃO mensurável em demo (fill simulado); real só nas Fases 5-6
+  market_orders_spreads: [1.0, 2.0]   # stress: 1-2 spreads por ordem a mercado (Parte 8)
+  asymmetric_on_stops: true
+  worse_on_news: true            # Parte 10

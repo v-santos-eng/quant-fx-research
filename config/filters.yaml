@@ -1,0 +1,11 @@
+# Cadeia de filtros, ordem fixa (Parte 11). STUB.
+version: 0
+order: [spread, volatility, news, session]
+spread:
+  ceiling_percentile: 75   # por par, por hora
+news:
+  block_before_min: 15
+  block_after_min: 30
+  tier1_only: true
+session:
+  allowed: [london, newyork]  # revisar na Fase 1

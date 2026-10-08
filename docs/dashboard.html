@@ -1,0 +1,272 @@
+<title>Robô Forex MT5 — Painel de Progresso</title>
+<style>
+  :root {
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+
+    --ground: #f6f8fa;
+    --panel: #ffffff;
+    --panel-2: #f0f3f7;
+    --ink: #17202e;
+    --muted: #5c6775;
+    --line: #e0e5ec;
+    --accent: #0e7c86;
+    --good: #1c8e5a;
+    --warn: #b1730f;
+    --crit: #c0473e;
+    --good-bg: #e4f4ec;
+    --warn-bg: #f8efdc;
+    --crit-bg: #f8e6e4;
+    --idle-bg: #eceff3;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 4px 16px rgba(20,30,45,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0d1219; --panel: #141c26; --panel-2: #10171f;
+      --ink: #e7ebf1; --muted: #8b98a7; --line: #232e3b;
+      --accent: #35c7d4; --good: #37c08a; --warn: #e0a637; --crit: #ea6a5f;
+      --good-bg: #10281f; --warn-bg: #2a2313; --crit-bg: #2c1a19; --idle-bg: #1a222d;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #f6f8fa; --panel: #ffffff; --panel-2: #f0f3f7;
+    --ink: #17202e; --muted: #5c6775; --line: #e0e5ec;
+    --accent: #0e7c86; --good: #1c8e5a; --warn: #b1730f; --crit: #c0473e;
+    --good-bg: #e4f4ec; --warn-bg: #f8efdc; --crit-bg: #f8e6e4; --idle-bg: #eceff3;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 4px 16px rgba(20,30,45,.05);
+  }
+  :root[data-theme="dark"] {
+    --ground: #0d1219; --panel: #141c26; --panel-2: #10171f;
+    --ink: #e7ebf1; --muted: #8b98a7; --line: #232e3b;
+    --accent: #35c7d4; --good: #37c08a; --warn: #e0a637; --crit: #ea6a5f;
+    --good-bg: #10281f; --warn-bg: #2a2313; --crit-bg: #2c1a19; --idle-bg: #1a222d;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--sans); line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 32px 24px 56px; }
+
+  header { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: flex-end;
+           justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .brand h1 { margin: 0; font-size: 1.5rem; font-weight: 650; letter-spacing: -.01em; text-wrap: balance; }
+  .brand p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font: 600 .72rem/1 var(--mono); letter-spacing: .02em; color: var(--muted);
+          background: var(--panel-2); border: 1px solid var(--line);
+          padding: 7px 10px; border-radius: 999px; white-space: nowrap; }
+  .chip b { color: var(--ink); font-weight: 700; }
+
+  .band { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px;
+          margin: 22px 0 8px; padding: 16px 18px; background: var(--panel);
+          border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+  .band .now { font-size: .95rem; }
+  .band .now b { color: var(--accent); }
+  .bar { flex: 1 1 220px; min-width: 180px; height: 9px; border-radius: 999px;
+         background: var(--idle-bg); overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: var(--pct,27%);
+                background: linear-gradient(90deg, var(--accent), var(--good)); }
+  .band .pct { font: 700 .85rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .updated { color: var(--muted); font-size: .78rem; font-family: var(--mono); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 14px 2px 26px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; font-size: .76rem; color: var(--muted); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .dot.good { background: var(--good); } .dot.warn { background: var(--warn); }
+  .dot.idle { background: var(--muted); opacity: .5; } .dot.crit { background: var(--crit); }
+
+  h2.sec { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em;
+           color: var(--muted); margin: 30px 2px 14px; font-weight: 700; }
+
+  /* roadmap spine */
+  .spine { list-style: none; margin: 0; padding: 0; position: relative; }
+  .spine::before { content: ""; position: absolute; left: 11px; top: 8px; bottom: 8px;
+                   width: 2px; background: var(--line); }
+  .step { position: relative; display: grid; grid-template-columns: 24px 1fr auto;
+          gap: 14px; align-items: center; padding: 9px 0; }
+  .step .node { width: 24px; height: 24px; border-radius: 50%; z-index: 1;
+                display: grid; place-items: center; font: 700 .7rem var(--mono);
+                background: var(--panel); border: 2px solid var(--line); color: var(--muted); }
+  .step.good .node { background: var(--good); border-color: var(--good); color: #fff; }
+  .step.warn .node { background: var(--warn-bg); border-color: var(--warn); color: var(--warn); }
+  .step .body b { font-weight: 620; font-size: .95rem; }
+  .step .body i { font-style: normal; color: var(--muted); font-size: .82rem; display: block; }
+  .step.warn .body b { color: var(--ink); }
+
+  .pill { font: 700 .68rem/1 var(--mono); letter-spacing: .03em; padding: 6px 10px;
+          border-radius: 999px; white-space: nowrap; }
+  .pill.good { color: var(--good); background: var(--good-bg); }
+  .pill.warn { color: var(--warn); background: var(--warn-bg); }
+  .pill.idle { color: var(--muted); background: var(--idle-bg); }
+  .pill.crit { color: var(--crit); background: var(--crit-bg); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(272px, 1fr)); gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+          padding: 18px; box-shadow: var(--shadow); }
+  .card h3 { margin: 0 0 12px; font-size: .95rem; font-weight: 640; display: flex;
+             align-items: center; justify-content: space-between; gap: 8px; }
+  .kv { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0;
+        border-top: 1px solid var(--line); font-size: .86rem; }
+  .kv:first-of-type { border-top: 0; }
+  .kv .k { color: var(--muted); }
+  .kv .v { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+  .big { font: 700 1.7rem/1 var(--mono); letter-spacing: -.02em; }
+  .big small { font: 600 .8rem var(--sans); color: var(--muted); letter-spacing: 0; }
+
+  .check { list-style: none; margin: 0; padding: 0; }
+  .check li { display: flex; align-items: center; gap: 9px; padding: 6px 0; font-size: .87rem; }
+  .check .m { width: 16px; text-align: center; flex: none; font-family: var(--mono); font-weight: 700; }
+  .check .good .m { color: var(--good); } .check .warn .m { color: var(--warn); }
+  .check .idle { color: var(--muted); }
+
+  .risk { display: flex; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); font-size: .84rem; }
+  .risk:first-child { border-top: 0; }
+  .risk .tag { font: 700 .68rem/1.4 var(--mono); padding: 2px 6px; border-radius: 5px; height: fit-content; flex: none; }
+
+  footer { margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: .78rem; text-wrap: balance; }
+  code { font-family: var(--mono); font-size: .82em; background: var(--panel-2);
+         padding: 1px 5px; border-radius: 5px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>Robô Forex MT5 — Painel de Progresso</h1>
+      <p>Sistema de trading baseado em evidências · desenvolvimento incremental por gates</p>
+    </div>
+    <div class="chips">
+      <span class="chip">Broker <b>Dukascopy</b></span>
+      <span class="chip">Conta <b>Demo · MT5 · USD</b></span>
+      <span class="chip">Timeframe <b>H4 / H1</b></span>
+    </div>
+  </header>
+
+  <div class="band">
+    <div class="now">Fase atual: <b>1 — Baseline de regras</b> · <span style="color:var(--good)">validação pronta ✅</span></div>
+    <div class="bar"><span style="--pct:42%"></span></div>
+    <div class="pct">Fase 0 completa (0.1–0.5) · 5 de 12 fases</div>
+    <div class="updated">atualizado 2026-07-25</div>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot good"></i> concluída</span>
+    <span><i class="dot warn"></i> em andamento</span>
+    <span><i class="dot idle"></i> pendente</span>
+    <span><i class="dot crit"></i> risco / bloqueio</span>
+  </div>
+
+  <h2 class="sec">Roteiro de fases &amp; gates</h2>
+  <ul class="spine">
+    <li class="step good"><span class="node">✓</span>
+      <span class="body"><b>0.1 · Fundação</b><i>config, reprodutibilidade, attempt log (SQLite)</i></span>
+      <span class="pill good">concluída</span></li>
+    <li class="step good"><span class="node">✓</span>
+      <span class="body"><b>0.2 · Dados</b><i>233M ticks Dukascopy 2010–2026, sanidade, relatório de qualidade</i></span>
+      <span class="pill good">concluída</span></li>
+    <li class="step good"><span class="node">✓</span>
+      <span class="body"><b>0.3 · Custos</b><i>spread (par×hora) + swap + comissão medidos; slippage modelado</i></span>
+      <span class="pill good">concluída</span></li>
+    <li class="step good"><span class="node">✓</span>
+      <span class="body"><b>0.4 · Backtester + reconciliação</b><i>engine + custos + reconciliação Python↔MT5 — 75/75 trades idênticos, R-01 dissolvido</i></span>
+      <span class="pill good">concluída</span></li>
+    <li class="step good"><span class="node">✓</span>
+      <span class="body"><b>0.5 · Toolkit de validação</b><i>PSR/DSR, Purged K-Fold, CPCV, Monte Carlo — 73 testes</i></span>
+      <span class="pill good">concluída</span></li>
+    <li class="step warn"><span class="node">◗</span>
+      <span class="body"><b>1 · Baseline de regras</b><i>Donchian/TSMOM H4 com custos + protocolo de validação (o teste do edge)</i></span>
+      <span class="pill warn">próxima</span></li>
+    <li class="step"><span class="node">2</span>
+      <span class="body"><b>2 · Risco + filtros</b><i>sizing por ATR, cascata, circuit breaker, filtros</i></span>
+      <span class="pill idle">pendente</span></li>
+    <li class="step"><span class="node">3</span>
+      <span class="body"><b>3 · Meta-label ML</b><i>LightGBM condicional — só se vencer o baseline em CPCV</i></span>
+      <span class="pill idle">condicional</span></li>
+    <li class="step"><span class="node">4</span>
+      <span class="body"><b>4 · Validação completa</b><i>WFO, Monte Carlo, DSR/PSR, leitura única do lockbox</i></span>
+      <span class="pill idle">pendente</span></li>
+    <li class="step"><span class="node">5</span>
+      <span class="body"><b>5 · Incubação em demo</b><i>3–6 meses, teste KS live vs backtest</i></span>
+      <span class="pill idle">pendente</span></li>
+    <li class="step"><span class="node">6</span>
+      <span class="body"><b>6 · Live mínimo</b><i>0,01 lote, tracking error na banda</i></span>
+      <span class="pill idle">pendente</span></li>
+    <li class="step"><span class="node">7</span>
+      <span class="body"><b>7 · Escala</b><i>aumento por degraus até o risco alvo</i></span>
+      <span class="pill idle">pendente</span></li>
+  </ul>
+
+  <h2 class="sec">Métricas &amp; estado</h2>
+  <div class="grid">
+
+    <div class="card">
+      <h3>Dataset <span class="pill good">pronto</span></h3>
+      <div class="big">233,04M <small>ticks</small></div>
+      <div class="kv"><span class="k">Arquivos Parquet</span><span class="v">31.005</span></div>
+      <div class="kv"><span class="k">Período</span><span class="v">2010 → 2026</span></div>
+      <div class="kv"><span class="k">Pares</span><span class="v">6</span></div>
+      <div class="kv"><span class="k">Fonte</span><span class="v">Dukascopy</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Modelo de custo <span class="pill good">medido</span></h3>
+      <div class="kv"><span class="k">EURUSD spread p50</span><span class="v">0,30 pip</span></div>
+      <div class="kv"><span class="k">USDJPY / GBPUSD</span><span class="v">0,50 / 1,00</span></div>
+      <div class="kv"><span class="k">Comissão FX</span><span class="v">$35 / M</span></div>
+      <div class="kv"><span class="k">All-in EURUSD</span><span class="v">~1,06 pip</span></div>
+      <div class="kv"><span class="k">Swap / Slippage</span><span class="v">medido / modelado</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Fase 0.4 — componentes</h3>
+      <ul class="check">
+        <li class="good"><span class="m">✓</span> <code>bars.py</code> — ticks → OHLC</li>
+        <li class="good"><span class="m">✓</span> <code>costs.py</code> — custos no fill</li>
+        <li class="good"><span class="m">✓</span> <code>backtester.py</code> — engine + baseline</li>
+        <li class="good"><span class="m">✓</span> <code>reference_ea.mq5</code> — EA de referência</li>
+        <li class="good"><span class="m">✓</span> <code>reconcile.py</code> — 75/75 match, Δ0%</li>
+      </ul>
+      <div class="kv"><span class="k">Gate R-01</span><span class="v">✅ PASS (idêntico)</span></div>
+      <div class="kv"><span class="k">Próximo</span><span class="v">Fase 0.5 — toolkit de validação</span></div>
+      <div class="kv"><span class="k">Gate</span><span class="v">±1 trade / ±2% P&amp;L</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Qualidade <span class="pill good">verde</span></h3>
+      <div class="big">35 <small>testes passando</small></div>
+      <div class="kv"><span class="k">Cobertura</span><span class="v">unit + integração</span></div>
+      <div class="kv"><span class="k">Reprodutibilidade</span><span class="v">seeds fixos + hashes</span></div>
+      <div class="kv"><span class="k">Attempt log</span><span class="v">SQLite ativo</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Riscos</h3>
+      <div class="risk"><span class="tag" style="color:var(--warn);background:var(--warn-bg)">R-01</span>
+        <span>Paridade Python↔MQL5 — <b>aberto</b>, em ataque na Fase 0.4</span></div>
+      <div class="risk"><span class="tag" style="color:var(--good);background:var(--good-bg)">R-02</span>
+        <span>Feed do broker — <b>dissolvido</b> ao migrar para Dukascopy</span></div>
+      <div class="risk"><span class="tag" style="color:var(--muted);background:var(--idle-bg)">R-04</span>
+        <span>Amostra p/ ML em H4 — monitorar antes da Fase 3</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Loop autônomo <span class="pill warn">ativo</span></h3>
+      <div class="kv"><span class="k">Alcance</span><span class="v">até Fase 4</span></div>
+      <div class="kv"><span class="k">Para em</span><span class="v">gate reprovado</span></div>
+      <div class="kv"><span class="k">Para em</span><span class="v">decisão real</span></div>
+      <div class="kv"><span class="k">Nunca autônomo</span><span class="v">demo / live</span></div>
+    </div>
+
+  </div>
+
+  <footer>
+    Prioridades do projeto: robustez › reprodutibilidade › evidência › manutenibilidade › performance › simplicidade.
+    Cada fase percorre 10 passos (arquitetura → … → validação → aprovação) com gate pré-registrado antes do teste.
+    Painel atualizado a cada marco.
+  </footer>
+</div>

@@ -1,0 +1,74 @@
+# Universo intraday (Fase 0i). Nomes MT5 + códigos do datafeed Dukascopy (bi5) confirmados
+# por smoke test 2026-07-25 (preços batem com níveis históricos reais).
+# datafeed_scale = divisor do inteiro do bi5 -> preço (todos /1000 aqui).
+# ATENÇÃO: specs de custo AUTORITATIVOS medidos do MT5 em experiments/broker_specs_intraday.json
+# (2026-07-26). pip_value_per_point abaixo = valor de 1 PONTO-DE-ÍNDICE (1.0) por lote, em USD.
+# volume_min: LOTE MÍNIMO do broker — decisivo p/ $1.000. Só GER40 (0,1) cabe em 0,5-1% de risco.
+# live_eligible: opera ao vivo agora (cabe no capital). Os demais ficam só no research até a
+# conta crescer (decisão do usuário 2026-07-26). Índices/commodities têm SESSÃO (não 24h).
+version: 1
+broker: Dukascopy
+instruments:
+  XAUUSD:                    # ouro (metal) — ticks 2010+ já baixados em data/dukascopy/XAUUSD
+    broker: XAUUSD
+    datafeed_code: XAUUSD
+    datafeed_scale: 1000
+    class: metal
+    digits: 3
+    point: 0.001
+    point_value_usd: 0.10
+    pip: 0.1
+    session_utc: "23:00-22:00"
+  US100:                     # Nasdaq 100
+    broker: USATECH.IDX
+    datafeed_code: USATECHIDXUSD
+    datafeed_scale: 1000
+    class: index
+    digits: 3
+    point: 0.001
+    contract_size: 1.0
+    pip_value_per_point: 1.0   # USD por 1.0 de índice, por lote (MT5 medido)
+    pip: 1.0
+    volume_min: 1.0            # ~$60/trade no mín. => 6% de $1.000
+    live_eligible: false
+    session_utc: "13:30-20:00"
+  US500:                     # S&P 500
+    broker: USA500.IDX
+    datafeed_code: USA500IDXUSD
+    datafeed_scale: 1000
+    class: index
+    digits: 3
+    point: 0.001
+    contract_size: 1.0
+    pip_value_per_point: 1.0
+    pip: 1.0
+    volume_min: 1.0            # ~$18/trade no mín. => 1,8% de $1.000
+    live_eligible: false
+    session_utc: "13:30-20:00"
+  GER40:                     # DAX  — PILOTO (único que cabe em $1.000)
+    broker: DEU.IDX
+    datafeed_code: DEUIDXEUR
+    datafeed_scale: 1000
+    class: index
+    digits: 3
+    point: 0.001
+    contract_size: 1.0
+    pip_value_per_point: 1.0   # USD/ponto/lote (MT5; embute EURUSD atual)
+    pip: 1.0
+    volume_min: 0.1            # ~$5,50/trade no mín. => 0,55% de $1.000 [OK]
+    live_eligible: true
+    session_utc: "07:00-15:30"
+  USOIL:                     # WTI Light Crude
+    broker: LIGHT.CMD
+    datafeed_code: LIGHTCMDUSD
+    datafeed_scale: 1000
+    class: commodity
+    digits: 3
+    point: 0.001
+    contract_size: 100.0
+    pip_value_per_point: 100.0  # USD por $1.00 de WTI, por lote (tick_value 0.1/0.001)
+    pip: 0.01
+    volume_min: 1.0            # ~$30/trade no mín. => 3% de $1.000
+    live_eligible: false
+    session_utc: "13:00-20:00"
+# NOTA: swap não modelado no intraday (fecha antes do rollover). Custos = spread/hora + comissão.

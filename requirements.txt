@@ -1,0 +1,8 @@
+# Dependências com versões fixas (RNF-01, reprodutibilidade). Python 3.14.3, venv em .venv/.
+# Cresce por fase:  Fase 3: scikit-learn, lightgbm, skl2onnx, onnx.
+PyYAML==6.0.3
+numpy==2.5.1
+pytest==9.1.1
+pandas==3.0.3
+pyarrow==25.0.0
+psutil

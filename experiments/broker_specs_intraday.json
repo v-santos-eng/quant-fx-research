@@ -1,0 +1,66 @@
+{
+  "captured_utc": "2026-07-26T05:20:14.769078+00:00",
+  "account_currency": "USD",
+  "symbols": {
+    "US100": {
+      "broker_symbol": "USATECH.IDX",
+      "contract_size": 1.0,
+      "tick_value": 0.001,
+      "tick_size": 0.001,
+      "digits": 3,
+      "point": 0.001,
+      "pip_value_per_lot_usd": null,
+      "swap_long": -13449.1985874,
+      "swap_short": 4403.9398203,
+      "swap_mode": 1,
+      "spread_current_points": 1503,
+      "volume_min": 1.0,
+      "volume_step": 1.0
+    },
+    "US500": {
+      "broker_symbol": "USA500.IDX",
+      "contract_size": 1.0,
+      "tick_value": 0.001,
+      "tick_size": 0.001,
+      "digits": 3,
+      "point": 0.001,
+      "pip_value_per_lot_usd": null,
+      "swap_long": -3491.3155677,
+      "swap_short": 1143.2312159,
+      "swap_mode": 1,
+      "spread_current_points": 447,
+      "volume_min": 1.0,
+      "volume_step": 1.0
+    },
+    "GER40": {
+      "broker_symbol": "DEU.IDX",
+      "contract_size": 1.0,
+      "tick_value": 0.001,
+      "tick_size": 0.001,
+      "digits": 3,
+      "point": 0.001,
+      "pip_value_per_lot_usd": null,
+      "swap_long": -8049.1311643,
+      "swap_short": 206.5594446,
+      "swap_mode": 1,
+      "spread_current_points": 4335,
+      "volume_min": 0.1,
+      "volume_step": 0.1
+    },
+    "USOIL": {
+      "broker_symbol": "LIGHT.CMD",
+      "contract_size": 100.0,
+      "tick_value": 0.1,
+      "tick_size": 0.001,
+      "digits": 3,
+      "point": 0.001,
+      "pip_value_per_lot_usd": null,
+      "swap_long": -13.966797600000001,
+      "swap_short": -12.426016,
+      "swap_mode": 1,
+      "spread_current_points": 86,
+      "volume_min": 1.0,
+      "volume_step": 1.0
+    }
+  }
+}

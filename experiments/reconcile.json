@@ -1,0 +1,18 @@
+{
+  "symbol": "EURUSD",
+  "window": [
+    "2023-01-01 00:00:00",
+    "2025-12-31 00:00:00"
+  ],
+  "n_trades_ea": 75,
+  "n_trades_py": 75,
+  "matches": 75,
+  "mismatches": 0,
+  "gross_pnl_ea_usd": -1617.6,
+  "gross_pnl_py_usd": -1617.6,
+  "pnl_diff_pct": 0.0,
+  "gate_trades_ok": true,
+  "gate_pnl_ok": true,
+  "verdict": "PASS",
+  "mismatch_examples": []
+}

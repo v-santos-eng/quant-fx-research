@@ -1,0 +1,230 @@
+<!-- Monitor operacional em tempo real — servido por research/monitor_server.py.
+     Faz polling de /status e /events; nada de dados estáticos. -->
+<title>Robô Forex MT5 — Monitor de Execução</title>
+<style>
+  :root{
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+    --bg:#0c1218; --panel:#131c26; --panel2:#0f1720; --line:#202c39;
+    --ink:#e6ecf3; --muted:#8695a6; --accent:#35c7d4;
+    --good:#37c08a; --warn:#e0a637; --crit:#ea6a5f;
+  }
+  @media (prefers-color-scheme:light){
+    :root{--bg:#f3f6f9;--panel:#fff;--panel2:#eef2f6;--line:#dde3ea;
+      --ink:#16202c;--muted:#5a6673;--accent:#0e7c86;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px}
+  .wrap{max-width:1200px;margin:0 auto;padding:18px 18px 40px}
+  header{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;
+    padding-bottom:12px;border-bottom:1px solid var(--line)}
+  h1{margin:0;font-size:1.05rem;font-weight:640}
+  h1 small{color:var(--muted);font-weight:400;font-size:.8rem}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font:600 .72rem var(--mono);color:var(--muted)}
+  .badge{padding:4px 9px;border-radius:999px;font:700 .7rem var(--mono);letter-spacing:.03em}
+  .b-run{color:var(--good);background:color-mix(in srgb,var(--good) 16%,transparent)}
+  .b-done{color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
+  .b-err{color:var(--crit);background:color-mix(in srgb,var(--crit) 16%,transparent)}
+  .b-off{color:var(--muted);background:color-mix(in srgb,var(--muted) 16%,transparent)}
+  .dotlive{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block;
+    animation:pulse 1.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  @media (prefers-reduced-motion:reduce){.dotlive{animation:none}}
+
+  .grid{display:grid;gap:12px;margin-top:14px;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .card.wide{grid-column:1/-1}
+  .card h2{margin:0 0 10px;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+
+  .step{font-size:1.05rem;font-weight:640;margin-bottom:2px}
+  .task{color:var(--muted);font-size:.86rem;margin-bottom:12px;word-break:break-word}
+  .pbar{height:12px;border-radius:999px;background:var(--panel2);overflow:hidden;border:1px solid var(--line)}
+  .pbar>span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--good));
+    width:0;transition:width .4s ease}
+  .pnums{display:flex;justify-content:space-between;margin-top:8px;font:700 .8rem var(--mono);
+    font-variant-numeric:tabular-nums;color:var(--muted)}
+  .pnums b{color:var(--ink)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+  .stat{background:var(--panel2);border-radius:8px;padding:8px 10px}
+  .stat .l{font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .stat .v{font:700 1rem var(--mono);font-variant-numeric:tabular-nums;margin-top:2px}
+
+  .kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid var(--line);
+    font-size:.82rem}
+  .kv:first-of-type{border-top:0}
+  .kv .k{color:var(--muted)} .kv .v{font-family:var(--mono);text-align:right;word-break:break-all}
+
+  .meter{margin:9px 0}
+  .meter .row{display:flex;justify-content:space-between;font:600 .74rem var(--mono);margin-bottom:4px}
+  .meter .track{height:7px;border-radius:999px;background:var(--panel2);overflow:hidden}
+  .meter .fill{height:100%;background:var(--accent);width:0;transition:width .4s}
+  .meter .fill.hi{background:var(--warn)} .meter .fill.crit{background:var(--crit)}
+
+  .queue{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .queue .col .h{font:700 .68rem var(--mono);color:var(--muted);margin-bottom:6px;text-transform:uppercase}
+  .tag{display:inline-block;font:600 .72rem var(--mono);padding:2px 7px;border-radius:6px;margin:2px 3px 0 0;
+    background:var(--panel2)}
+  .tag.run{color:var(--warn);background:color-mix(in srgb,var(--warn) 15%,transparent)}
+  .tag.ok{color:var(--good);background:color-mix(in srgb,var(--good) 15%,transparent)}
+
+  .cnt{display:flex;gap:18px}
+  .cnt .c{flex:1;text-align:center;background:var(--panel2);border-radius:8px;padding:10px}
+  .cnt .c .v{font:700 1.4rem var(--mono)} .cnt .c .l{font-size:.68rem;color:var(--muted);text-transform:uppercase}
+  .cnt .c.err .v{color:var(--crit)} .cnt .c.warn .v{color:var(--warn)} .cnt .c.retry .v{color:var(--accent)}
+
+  #log{height:280px;overflow:auto;background:var(--panel2);border:1px solid var(--line);border-radius:8px;
+    padding:8px 10px;font:12px/1.5 var(--mono)}
+  #log .ln{display:flex;gap:8px;padding:1px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 40%,transparent)}
+  #log .ts{color:var(--muted);flex:none}
+  #log .lv{flex:none;font-weight:700;width:64px}
+  #log .INFO .lv{color:var(--accent)} #log .WARNING .lv{color:var(--warn)} #log .ERROR .lv{color:var(--crit)}
+  #log .msg{word-break:break-word}
+  #log .fld{color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Monitor de Execução <small id="run">—</small></h1>
+    <div class="meta">
+      <span id="live"><span class="dotlive"></span> ao vivo</span>
+      <span class="badge b-run" id="state">—</span>
+      <span id="phase">Fase —</span>
+      <span>· atualizado <b id="updated">—</b></span>
+      <span>· poll <b id="poll">1s</b></span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card wide">
+      <h2>Progresso</h2>
+      <div class="step" id="step">aguardando execução…</div>
+      <div class="task" id="taskline">—</div>
+      <div class="pbar"><span id="pfill"></span></div>
+      <div class="pnums"><span><b id="pct">0%</b> concluído</span>
+        <span><b id="done">0</b> feitos · <b id="rem">0</b> restantes · <b id="total">0</b> total</span></div>
+      <div class="stats">
+        <div class="stat"><div class="l">Decorrido</div><div class="v" id="elapsed">0s</div></div>
+        <div class="stat"><div class="l">ETA</div><div class="v" id="eta">—</div></div>
+        <div class="stat"><div class="l">Velocidade</div><div class="v" id="rate">0/s</div></div>
+        <div class="stat"><div class="l">Erros</div><div class="v" id="errshead">0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Tarefa / dados agora</h2>
+      <div class="kv"><span class="k">Arquivo atual</span><span class="v" id="cfile">—</span></div>
+      <div class="kv"><span class="k">Fonte de dados</span><span class="v" id="src">—</span></div>
+      <div class="kv"><span class="k">Armazenamento</span><span class="v" id="store">—</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Recursos</h2>
+      <div class="meter"><div class="row"><span>CPU</span><span id="cpuv">—</span></div>
+        <div class="track"><div class="fill" id="cpuf"></div></div></div>
+      <div class="meter"><div class="row"><span>RAM</span><span id="ramv">—</span></div>
+        <div class="track"><div class="fill" id="ramf"></div></div></div>
+      <div class="meter"><div class="row"><span>Disco</span><span id="diskv">—</span></div>
+        <div class="track"><div class="fill" id="diskf"></div></div></div>
+      <div class="kv"><span class="k">Rede ↓ / ↑</span><span class="v" id="net">— / —</span></div>
+      <div class="kv"><span class="k">RSS do processo</span><span class="v" id="rss">—</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Contadores</h2>
+      <div class="cnt">
+        <div class="c err"><div class="v" id="cerr">0</div><div class="l">erros</div></div>
+        <div class="c warn"><div class="v" id="cwarn">0</div><div class="l">avisos</div></div>
+        <div class="c retry"><div class="v" id="cretry">0</div><div class="l">retries</div></div>
+      </div>
+    </div>
+
+    <div class="card wide">
+      <h2>Fila de tarefas</h2>
+      <div class="queue">
+        <div class="col"><div class="h">Pendentes</div><div id="qp">—</div></div>
+        <div class="col"><div class="h">Em execução</div><div id="qr">—</div></div>
+        <div class="col"><div class="h">Concluídas</div><div id="qd">—</div></div>
+      </div>
+    </div>
+
+    <div class="card wide">
+      <h2>Logs em tempo real</h2>
+      <div id="log"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  let evOffset=0, pollMs=1000, timer=null;
+  const $=id=>document.getElementById(id);
+  const fmtDur=s=>{if(s==null)return "—";s=Math.round(s);const h=(s/3600)|0,m=((s%3600)/60)|0,x=s%60;
+    return h?`${h}h${String(m).padStart(2,"0")}m`:m?`${m}m${String(x).padStart(2,"0")}s`:`${x}s`;};
+  const setFill=(el,pct)=>{el.style.width=Math.min(pct,100)+"%";
+    el.className="fill"+(pct>=90?" crit":pct>=70?" hi":"");};
+
+  async function poll(){
+    let st;
+    try{ st=await (await fetch("/status",{cache:"no-store"})).json(); }
+    catch(e){ $("state").textContent="SERVIDOR OFFLINE"; $("state").className="badge b-off";
+      $("live").innerHTML="✕ sem conexão"; return; }
+    $("run").textContent=st.run?("· "+st.run):"—";
+    $("phase").textContent="Fase "+(st.phase||"—");
+    $("updated").textContent=(st.updated_at||"").replace("T"," ").replace("+00:00"," UTC");
+    pollMs=(st.poll_interval_s||1)*1000; $("poll").textContent=(st.poll_interval_s||1)+"s";
+    const state=(st.state||"running").toUpperCase();
+    const age=st.updated_at?(Date.now()-Date.parse(st.updated_at))/1000:1e9;
+    $("state").textContent=state;
+    $("state").className="badge "+(state==="RUNNING"?"b-run":state==="DONE"?"b-done":"b-err");
+    if(state==="RUNNING")
+      $("live").innerHTML=age>15?('⚠ sem atualização há '+Math.round(age)+'s'):'<span class="dotlive"></span> ao vivo';
+    else if(state==="DONE") $("live").innerHTML='✓ execução concluída';
+    else $("live").innerHTML='✕ '+state.toLowerCase();
+    $("step").textContent=st.step||"aguardando execução…";
+    $("taskline").textContent=state==="RUNNING"?(st.task||"—")
+      :("Nenhuma tarefa em execução"+(st.task?(" · última: "+st.task):""));
+    const total=st.total||0,done=st.done||0,pct=total?Math.floor(done/total*100):0;
+    $("pfill").style.width=pct+"%"; $("pct").textContent=pct+"%";
+    $("done").textContent=done.toLocaleString("pt-BR");
+    $("rem").textContent=(st.remaining||0).toLocaleString("pt-BR");
+    $("total").textContent=total.toLocaleString("pt-BR");
+    $("elapsed").textContent=fmtDur(st.elapsed_s); $("eta").textContent=fmtDur(st.eta_s);
+    $("rate").textContent=(st.rate_per_s||0)+"/s";
+    $("cfile").textContent=st.current_file||"—";
+    $("src").textContent=st.data_source||"—"; $("store").textContent=st.storage||"—";
+    const c=st.counters||{}; $("cerr").textContent=c.errors||0; $("errshead").textContent=c.errors||0;
+    $("cwarn").textContent=c.warnings||0; $("cretry").textContent=c.retries||0;
+    const r=st.resources||{};
+    if(r.cpu_pct!=null){$("cpuv").textContent=r.cpu_pct+"%";setFill($("cpuf"),r.cpu_pct);}
+    if(r.ram_pct!=null){$("ramv").textContent=r.ram_pct+"% ("+r.ram_used_gb+"/"+r.ram_total_gb+" GB)";setFill($("ramf"),r.ram_pct);}
+    if(r.disk_pct!=null){$("diskv").textContent=r.disk_pct+"% ("+r.disk_free_gb+" GB livres)";setFill($("diskf"),r.disk_pct);}
+    if(r.net_down_kbps!=null)$("net").textContent=r.net_down_kbps+" / "+r.net_up_kbps+" KB/s";
+    if(r.proc_rss_mb!=null)$("rss").textContent=r.proc_rss_mb+" MB";
+    const q=st.queue||{};
+    $("qp").innerHTML=(q.pending||[]).map(x=>`<span class="tag">${x}</span>`).join("")||"—";
+    $("qr").innerHTML=(q.running||[]).map(x=>`<span class="tag run">${x}</span>`).join("")||"—";
+    $("qd").innerHTML=(q.done||[]).map(x=>`<span class="tag ok">${x}</span>`).join("")||"—";
+    pollEvents();
+    clearTimeout(timer); timer=setTimeout(poll,pollMs);
+  }
+  async function pollEvents(){
+    let d; try{ d=await (await fetch("/events?offset="+evOffset,{cache:"no-store"})).json(); }catch(e){return;}
+    if(d.offset<evOffset){evOffset=0;$("log").innerHTML="";} // log rotacionado (novo run)
+    const box=$("log"), atBottom=box.scrollTop+box.clientHeight>=box.scrollHeight-30;
+    for(const e of (d.events||[])){
+      const extra=Object.entries(e).filter(([k])=>!["ts","level","msg"].includes(k))
+        .map(([k,v])=>`${k}=${v}`).join(" ");
+      const div=document.createElement("div"); div.className="ln "+(e.level||"INFO");
+      div.innerHTML=`<span class="ts">${(e.ts||"").replace("T"," ").slice(11)}</span>`+
+        `<span class="lv">${e.level||""}</span><span class="msg">${e.msg||""}`+
+        (extra?` <span class="fld">${extra}</span>`:"")+`</span>`;
+      box.appendChild(div);
+    }
+    while(box.children.length>500) box.removeChild(box.firstChild);
+    if(atBottom) box.scrollTop=box.scrollHeight;
+    evOffset=d.offset||evOffset;
+  }
+  poll();
+})();
+</script>

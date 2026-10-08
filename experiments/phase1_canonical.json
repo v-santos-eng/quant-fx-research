@@ -1,0 +1,51 @@
+{
+  "phase": "1",
+  "strategy": "Donchian canonico (trailing 3ATR + flat + ADX>=25) H4",
+  "params": {
+    "entry_n": 55,
+    "atr_mult": 3.0,
+    "adx_min": 25.0,
+    "lots": 0.1
+  },
+  "n_trades": 1774,
+  "net_total_usd": -13634.34,
+  "sharpe_ann": -0.277,
+  "psr": 0.1449,
+  "cpcv_sharpe_ann_mean": -0.45,
+  "cpcv_sharpe_ann_std": 0.547,
+  "cpcv_pct_paths_positive": 0.25,
+  "mc_maxdd_p50": 19054.36,
+  "mc_maxdd_p99": 38964.06,
+  "realized_maxdd_usd": 19405.16,
+  "dsr": 0.0,
+  "sr_star_ann": 0.759,
+  "n_trials": 7,
+  "per_pair": {
+    "EURUSD": {
+      "n_trades": 302,
+      "net_usd": -1968.17
+    },
+    "USDJPY": {
+      "n_trades": 290,
+      "net_usd": -794.65
+    },
+    "GBPUSD": {
+      "n_trades": 300,
+      "net_usd": -2786.62
+    },
+    "AUDUSD": {
+      "n_trades": 275,
+      "net_usd": -1005.95
+    },
+    "USDCAD": {
+      "n_trades": 298,
+      "net_usd": -2225.7
+    },
+    "XAUUSD": {
+      "n_trades": 309,
+      "net_usd": -4853.25
+    }
+  },
+  "gate_sharpe_gt_0": false,
+  "verdict": "FAIL"
+}

@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+data/
+config/secrets.yaml
+experiments/*.db
+experiments/*.log
+experiments/*.parquet
+experiments/*.csv
+experiments/monitor/

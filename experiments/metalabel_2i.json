@@ -1,0 +1,24 @@
+{
+  "phase": "2i",
+  "instrument": "GER40",
+  "commission_per_million": 0.0,
+  "baseline_orb": {
+    "n_trades": 3606,
+    "sharpe_ann": 0.179,
+    "net_usd": 215.3,
+    "win_rate": 0.366
+  },
+  "model": "gbm",
+  "gbm_sharpe": 0.159,
+  "logit_sharpe": 0.155,
+  "tau": 0.45,
+  "n_trades_filtered": 351,
+  "sharpe_ann": 0.159,
+  "psr": 0.7537,
+  "cpcv_pct_paths_positive": 0.714,
+  "dsr_deflated": 0.0297,
+  "mc_maxdd_p99_usd": 194.75,
+  "beats_baseline": false,
+  "gate_pass": false,
+  "verdict": "FAIL"
+}

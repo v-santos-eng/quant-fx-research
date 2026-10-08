@@ -1,0 +1,13 @@
+# Mapa símbolo canônico -> símbolo do broker + metadados.
+# Broker = Dukascopy (server Dukascopy-demo-mt5-1, Dukascopy Bank SA, demo, USD).
+# Mapeamento é IDENTIDADE — Dukascopy MT5 usa os nomes canônicos, inclusive XAUUSD.
+# Specs confirmados via MT5 symbol_info (2026-07-22).
+version: 1
+broker: Dukascopy
+symbols:
+  EURUSD: {broker: EURUSD, digits: 5, contract: 100000, pip: 0.0001}
+  USDJPY: {broker: USDJPY, digits: 3, contract: 100000, pip: 0.01}
+  GBPUSD: {broker: GBPUSD, digits: 5, contract: 100000, pip: 0.0001}
+  AUDUSD: {broker: AUDUSD, digits: 5, contract: 100000, pip: 0.0001}
+  USDCAD: {broker: USDCAD, digits: 5, contract: 100000, pip: 0.0001}
+  XAUUSD: {broker: XAUUSD, digits: 3, contract: 100,    pip: 0.1}

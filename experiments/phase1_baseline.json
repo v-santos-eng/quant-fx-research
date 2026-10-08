@@ -1,0 +1,45 @@
+{
+  "phase": "1",
+  "strategy": "Donchian 55/20 H4 portfolio (baseline)",
+  "n_trades": 2252,
+  "net_total_usd": -32673.77,
+  "sharpe_ann": -0.552,
+  "psr": 0.0259,
+  "cpcv_sharpe_ann_mean": -0.667,
+  "cpcv_sharpe_ann_std": 0.353,
+  "cpcv_pct_paths_positive": 0.0,
+  "mc_maxdd_p50": 37796.97,
+  "mc_maxdd_p99": 65822.54,
+  "realized_maxdd_usd": 37324.76,
+  "dsr": 0.0002,
+  "sr_star_ann": 0.459,
+  "n_trials": 6,
+  "per_pair": {
+    "EURUSD": {
+      "n_trades": 380,
+      "net_usd": -5843.49
+    },
+    "USDJPY": {
+      "n_trades": 363,
+      "net_usd": -1701.5
+    },
+    "GBPUSD": {
+      "n_trades": 387,
+      "net_usd": -6477.48
+    },
+    "AUDUSD": {
+      "n_trades": 395,
+      "net_usd": -4688.62
+    },
+    "USDCAD": {
+      "n_trades": 381,
+      "net_usd": -4346.72
+    },
+    "XAUUSD": {
+      "n_trades": 346,
+      "net_usd": -9615.96
+    }
+  },
+  "gate_sharpe_gt_0": false,
+  "verdict": "FAIL"
+}

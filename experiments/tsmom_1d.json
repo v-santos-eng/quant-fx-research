@@ -1,0 +1,67 @@
+{
+  "phase": "1d",
+  "strategy": "TSMOM D1 cross-asset (Part 13)",
+  "swap_mult": 1.0,
+  "sharpe_net": -0.965,
+  "sharpe_gross": 0.283,
+  "net_over_gross": -3.41,
+  "psr": 0.0,
+  "blocks_sharpe": [
+    -0.66,
+    -0.85,
+    -1.88,
+    -0.29,
+    -1.32
+  ],
+  "blocks_positive": 0,
+  "cpcv_pct_positive": 0.0,
+  "dsr": 0.0,
+  "mc_maxdd_p99": 6.22454,
+  "doc_phase1_gate": false,
+  "strict_gate": false,
+  "verdict": "FAIL",
+  "per_instrument": {
+    "EURUSD": {
+      "gross": 0.1003,
+      "swap": -0.0389,
+      "net": 0.0007
+    },
+    "USDJPY": {
+      "gross": 0.4279,
+      "swap": 0.0053,
+      "net": 0.3747
+    },
+    "GBPUSD": {
+      "gross": -0.1171,
+      "swap": -0.0584,
+      "net": -0.2551
+    },
+    "AUDUSD": {
+      "gross": -0.195,
+      "swap": -0.0599,
+      "net": -0.356
+    },
+    "USDCAD": {
+      "gross": -0.1982,
+      "swap": -0.0559,
+      "net": -0.3765
+    },
+    "XAUUSD": {
+      "gross": 0.6272,
+      "swap": -0.3545,
+      "net": 0.1837
+    },
+    "US500": {
+      "gross": 0.2901,
+      "swap": -2.0389,
+      "net": -1.7822
+    },
+    "US100": {
+      "gross": 0.2825,
+      "swap": -2.2098,
+      "net": -1.9573
+    }
+  },
+  "stress_swap2x_sharpe_net": -2.054,
+  "survives_swap2x": false
+}

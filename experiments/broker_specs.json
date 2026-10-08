@@ -1,0 +1,95 @@
+{
+  "account": {
+    "server": "Dukascopy-demo-mt5-1",
+    "currency": "USD",
+    "demo": true,
+    "company": "Dukascopy Bank SA",
+    "connected": true
+  },
+  "symbols": {
+    "EURUSD": {
+      "symbol": "EURUSD",
+      "digits": 5,
+      "point": 1e-05,
+      "spread_points": 25,
+      "contract_size": 100000.0,
+      "tick_value": 1.0,
+      "tick_size": 1e-05,
+      "swap_long": -6.196809999999999,
+      "swap_short": 2.76791,
+      "swap_mode": 1,
+      "swap_mode_name": "points",
+      "swap_rollover3days": 7
+    },
+    "USDJPY": {
+      "symbol": "USDJPY",
+      "digits": 3,
+      "point": 0.001,
+      "spread_points": 97,
+      "contract_size": 100000.0,
+      "tick_value": 0.6101653548111539,
+      "tick_size": 0.001,
+      "swap_long": 10.2336191,
+      "swap_short": -15.172630700000001,
+      "swap_mode": 1,
+      "swap_mode_name": "points",
+      "swap_rollover3days": 7
+    },
+    "GBPUSD": {
+      "symbol": "GBPUSD",
+      "digits": 5,
+      "point": 1e-05,
+      "spread_points": 30,
+      "contract_size": 100000.0,
+      "tick_value": 1.0,
+      "tick_size": 1e-05,
+      "swap_long": -2.03848,
+      "swap_short": -2.33939,
+      "swap_mode": 1,
+      "swap_mode_name": "points",
+      "swap_rollover3days": 7
+    },
+    "AUDUSD": {
+      "symbol": "AUDUSD",
+      "digits": 5,
+      "point": 1e-05,
+      "spread_points": 39,
+      "contract_size": 100000.0,
+      "tick_value": 1.0,
+      "tick_size": 1e-05,
+      "swap_long": -0.52544,
+      "swap_short": -2.3387000000000002,
+      "swap_mode": 1,
+      "swap_mode_name": "points",
+      "swap_rollover3days": 7
+    },
+    "USDCAD": {
+      "symbol": "USDCAD",
+      "digits": 5,
+      "point": 1e-05,
+      "spread_points": 30,
+      "contract_size": 100000.0,
+      "tick_value": 0.7093355653759125,
+      "tick_size": 1e-05,
+      "swap_long": 3.20714,
+      "swap_short": -8.99606,
+      "swap_mode": 1,
+      "swap_mode_name": "points",
+      "swap_rollover3days": 7
+    },
+    "XAUUSD": {
+      "symbol": "XAUUSD",
+      "digits": 3,
+      "point": 0.001,
+      "spread_points": 4730,
+      "contract_size": 100.0,
+      "tick_value": 0.1,
+      "tick_size": 0.001,
+      "swap_long": -627.4108953,
+      "swap_short": 322.25074190000004,
+      "swap_mode": 1,
+      "swap_mode_name": "points",
+      "swap_rollover3days": 7
+    }
+  }
+}
