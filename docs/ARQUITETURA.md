@@ -74,7 +74,7 @@ Rastreabilidade: cada RF cita a Parte da pesquisa que o origina.
 
 - **RNF-01 Reprodutibilidade**: seeds fixos, versões pinadas, dados versionados, experimentos versionados; qualquer resultado reexecutável bit-a-bit (dentro de tolerância numérica declarada).
 - **RNF-02 Separação de responsabilidades**: pesquisa / treino / validação / execução em módulos distintos e testáveis isoladamente.
-- **RNF-03 SOLID, baixo acoplamento, alta coesão**; sem abstração especulativa (interface com 1 implementação só se houver 2º runtime real — caso do split Python/MQL5).
+- **RNF-03 SOLID, baixo acoplamento, alta coesão**; sem abstração especulativa (interface com 1 implementação só se houver 2º runtime real, caso do split Python/MQL5).
 - **RNF-04 Configuração por arquivos** (YAML), sem constantes mágicas espalhadas.
 - **RNF-05 Logging estruturado** em todas as camadas.
 - **RNF-06 Testes automatizados** (unitários + integração) como gate de cada fase.
@@ -101,11 +101,11 @@ Numerados para virarem itens de decisão/tarefa. **[R]** risco · **[L]** lacuna
 - **R-09 (médio) Reprodutibilidade de dados de mercado.** Tick histórico de broker tem profundidade limitada; Dukascopy pode ser revisado. → Congelar snapshots versionados dos datasets de pesquisa (hash).
 - **L-01 Ambiente não especificado:** MT5 instalado? Python disponível? Conta (demo/real), corretora, moeda da conta, capital. → **D-01, D-02**.
 - **L-02 Ferramenta de versionamento de experimentos** não definida (attempt log em SQLite/CSV vs MLflow). → **D-03** (recomendo mínimo).
-- **L-03 Política de "posição aberta durante notícia"** é definida por par via backtest (RF-17) — não decidível a priori; vira sub-tarefa da Fase 2.
+- **L-03 Política de "posição aberta durante notícia"** é definida por par via backtest (RF-17), não decidível a priori; vira sub-tarefa da Fase 2.
 - **L-04 Fonte de tick de pesquisa** (Dukascopy vs TrueFX vs histórico do broker) não fixada. → **D-04**.
 - **D-05 Escopo de ML agora vs depois:** comprometer Fase 3 ou tratá-la como estritamente condicional ao gate da Fase 1/2 (recomendo condicional, alinhado à pesquisa).
 
-**Refinamento justificado vs Parte 12:** a pesquisa coloca a validação completa na Fase 4. Porém os *primitivos* estatísticos (attempt log, purged CV, CPCV, Monte Carlo, DSR) são necessários para tornar o **gate da Fase 1 significativo** — "Sharpe líquido > 0 em 10+ anos" sem distribuição de Sharpe e stress de custos é exatamente o backtest bonito que a Parte 8 condena. Por isso proponho **construir o toolkit de validação na Fase 0** e aplicá-lo em cada gate; a **leitura do lockbox permanece única, no fim (Fase 4)**. Justificativa: maior evidência (Parte 8) sobre conveniência de cronograma.
+**Refinamento justificado vs Parte 12:** a pesquisa coloca a validação completa na Fase 4. Porém os *primitivos* estatísticos (attempt log, purged CV, CPCV, Monte Carlo, DSR) são necessários para tornar o **gate da Fase 1 significativo**, "Sharpe líquido > 0 em 10+ anos" sem distribuição de Sharpe e stress de custos é exatamente o backtest bonito que a Parte 8 condena. Por isso proponho **construir o toolkit de validação na Fase 0** e aplicá-lo em cada gate; a **leitura do lockbox permanece única, no fim (Fase 4)**. Justificativa: maior evidência (Parte 8) sobre conveniência de cronograma.
 
 ---
 
@@ -156,10 +156,10 @@ DataSource(Duka/TrueFX/broker)                  DataSource(broker ticks)
 ### 5.2 Fluxo em produção (por barra fechada H4/H1)
 `dados → sanidade → features → regime → sinal → filtros → risco → execução → logging → monitoramento → auditoria` *(Parte 11)*.
 
-### 5.3 Decisão de runtime — **Produção 100% MQL5 + ONNX** (não Python-vivo)
+### 5.3 Decisão de runtime: **Produção 100% MQL5 + ONNX** (não Python-vivo)
 Justificativa (Parte 11 + prioridade Robustez): a ponte Python↔MT5 adiciona um processo, uma ponte e dois pontos de falha a um sistema que deve rodar sozinho por anos. Python vivo fica **restrito a pesquisa e coleta**. *(RNF-08)*
 
-### 5.4 Mitigação do R-01 (paridade) — mecanismo explícito
+### 5.4 Mitigação do R-01 (paridade): mecanismo explícito
 1. **Spec única** (§4) lida pelos dois runtimes.
 2. **Golden-set cross-check**: um conjunto fixo de barras é processado em Python e em MQL5; asserção de igualdade numérica de features/sinais dentro de tolerância declarada. Vira teste de regressão.
 3. **Reconciliação de backtest**: o `Backtester` Python e o **Strategy Tester ("Every tick based on real ticks")** rodam o mesmo período; divergência de P&L/trades deve ficar dentro de tolerância antes de confiar em qualquer número. É um **gate da Fase 0**.
@@ -167,8 +167,8 @@ Justificativa (Parte 11 + prioridade Robustez): a ponte Python↔MT5 adiciona um
 ### 5.5 Layout de repositório (proposto, enxuto)
 ```
 Forex/
-  config/          # specs YAML (feature, cost, risk, filters) — fonte única
-  data/            # snapshots versionados (hash) — NÃO versionar bruto pesado no git
+  config/          # specs YAML (feature, cost, risk, filters), fonte única
+  data/            # snapshots versionados (hash), NÃO versionar bruto pesado no git
   research/        # Python: datasource, sanitizer, features, backtester, validation
   mt5/             # MQL5: EA, includes espelhando specs, export ONNX
   experiments/     # attempt log (SQLite) + resultados versionados
@@ -186,7 +186,7 @@ Forex/
 - Python: pandas, numpy, scikit-learn, LightGBM, ONNX/skl2onnx, pyarrow. Sem frameworks pesados de orquestração (YAGNI).
 - Persistência: **Parquet** (dados), **SQLite** (attempt log/experimentos). *(evita dependência de servidor; local-first)*
 - Config: YAML. Testes: pytest. MQL5 nativo no MT5 (ONNX desde 2023).
-- Sem MLflow/Airflow por ora — attempt log em SQLite cobre o requisito com muito menos superfície. Reavaliar só se medida a insuficiência. *(RNF-10)*
+- Sem MLflow/Airflow por ora, attempt log em SQLite cobre o requisito com muito menos superfície. Reavaliar só se medida a insuficiência. *(RNF-10)*
 
 ---
 
@@ -213,7 +213,7 @@ Aplicada em **todas** as fases (não é etapa isolada):
 
 ## 8. Fases e gates (pré-registrados, objetivos)
 
-> Regra atravessadora: **critério de gate escrito ANTES do teste**; **proibido ajuste ad hoc** — mudança em sistema aprovado só em janela de revisão, com o mesmo protocolo. Attempt log ativo desde o **primeiro** backtest.
+> Regra atravessadora: **critério de gate escrito ANTES do teste**; **proibido ajuste ad hoc**, mudança em sistema aprovado só em janela de revisão, com o mesmo protocolo. Attempt log ativo desde o **primeiro** backtest.
 
 | Fase | Entregável | Gate objetivo (pré-registrado) |
 | :-- | :-- | :-- |
@@ -237,16 +237,16 @@ Cada fase percorre os 10 passos da metodologia antes de "aprovada".
 
 ## 9. Decisões (resolvidas em 2026-07-20)
 
-- **D-01 Corretora + conta:** ✅ ActivTrades, servidor `ActivTradesMarkets-Server`. **Pendente confirmar: demo ou live? Moeda da conta? Tipo de conta (Standard vs Raw/spread)?** — o tipo de conta afeta o spread e será, de qualquer forma, medido na Fase 0.3.
+- **D-01 Corretora + conta:** ✅ ActivTrades, servidor `ActivTradesMarkets-Server`. **Pendente confirmar: demo ou live? Moeda da conta? Tipo de conta (Standard vs Raw/spread)?**, o tipo de conta afeta o spread e será, de qualquer forma, medido na Fase 0.3.
 - **D-02 Ambiente local:** ✅ MT5 e Python instalados.
-- **D-03 Versionamento de experimentos:** ✅ Mínimo — **AttemptRegistry em SQLite** + pasta `experiments/` com resultados versionados por hash. Sem MLflow (RNF-10).
+- **D-03 Versionamento de experimentos:** ✅ Mínimo, **AttemptRegistry em SQLite** + pasta `experiments/` com resultados versionados por hash. Sem MLflow (RNF-10).
 - **D-04 Fonte de tick de pesquisa:** ✅ **Dukascopy** (gratuita, profundidade desde ~2003, boa qualidade). Confirmar sempre contra o feed do broker (R-02).
 - **D-05 ML:** ✅ Fase 3 **estritamente condicional** ao gate da Fase 1/2.
 - **D-06 Portfólio:** ✅ EURUSD/USDJPY/GBPUSD/AUDUSD/USDCAD + XAUUSD meio peso.
 
 ### Pendências antes da Fase 0
 - Confirmar **demo vs live** e **moeda da conta**.
-- **Rotacionar a senha da conta** (foi exposta em chat) — ação do usuário.
+- **Rotacionar a senha da conta** (foi exposta em chat), ação do usuário.
 
 ---
 

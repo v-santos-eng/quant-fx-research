@@ -30,7 +30,7 @@ A system that runs badly for ten years beats a system designed brilliantly for t
 
 ---
 
-## Part 1 — What actually produces long-term consistency
+## Part 1: What actually produces long-term consistency
 
 Ranked by expected contribution to whether the system is still solvent and running in 2036.
 
@@ -107,7 +107,7 @@ Indicator choice, model architecture, feature engineering sophistication, timefr
 
 ---
 
-## Part 2 — Strategy families
+## Part 2: Strategy families
 
 ### Verdict table
 
@@ -171,7 +171,7 @@ For your purposes a realized-volatility percentile achieves 80% of what an HMM a
 
 ---
 
-## Part 3 — Asset selection
+## Part 3: Asset selection
 
 ### The one metric that matters most
 
@@ -216,7 +216,7 @@ Excluded and why: crypto CFDs (cost, weekend gap risk, short history, and the CF
 
 ---
 
-## Part 4 — Timeframes
+## Part 4: Timeframes
 
 Two arithmetic constraints decide this, and neither is a matter of taste.
 
@@ -241,7 +241,7 @@ The counterargument for lower timeframes is that they generate more observations
 
 ---
 
-## Part 5 — Technical indicators
+## Part 5: Technical indicators
 
 Nearly all of the sixteen indicators you listed are measuring one of three underlying quantities.
 
@@ -273,7 +273,7 @@ Brock, Lakonishok and LeBaron (1992, *Journal of Finance*) found predictive valu
 
 ---
 
-## Part 6 — Feature engineering
+## Part 6: Feature engineering
 
 ### Features with real published support
 
@@ -313,7 +313,7 @@ Fractional differentiation (López de Prado 2018) is worth knowing about: it mak
 
 ---
 
-## Part 7 — Machine learning
+## Part 7: Machine learning
 
 ### The binding constraint
 
@@ -349,7 +349,7 @@ Build the system to work with the meta-labeler disabled. Turn it on only if it c
 
 ---
 
-## Part 8 — Statistical validation
+## Part 8: Statistical validation
 
 ### What each method detects
 
@@ -395,7 +395,7 @@ If a strategy fails any of these, it does not proceed. Not "with reduced size". 
 
 ---
 
-## Part 9 — Risk management
+## Part 9: Risk management
 
 ### Sizing, layered
 
@@ -433,7 +433,7 @@ Broker insolvency (split capital across venues once size justifies it), symbol r
 
 ---
 
-## Part 10 — Macroeconomic events
+## Part 10: Macroeconomic events
 
 Ederington and Lee (1993, *Journal of Finance*) documented that scheduled macro releases produce sharp volatility spikes concentrated in the minutes after release. Andersen, Bollerslev, Diebold and Vega (2003, *AER*) quantified the announcement effect on exchange rates in high-frequency data. Lucca and Moench (2015, *Journal of Finance*) documented the pre-FOMC announcement drift in equities. Savor and Wilson (2013) showed a disproportionate share of the equity risk premium accrues on announcement days. All `[S]`.
 
@@ -455,7 +455,7 @@ One practical detail: the calendar itself is a dependency. If you filter on sche
 
 ---
 
-## Part 11 — Software architecture
+## Part 11: Software architecture
 
 ### The single most important architectural decision
 
@@ -499,7 +499,7 @@ CI runs the full test suite plus a fixed-seed backtest on a frozen data slice, a
 
 ---
 
-## Part 12 — Roadmap with quantitative gates
+## Part 12: Roadmap with quantitative gates
 
 No phase begins until the prior phase's exit criteria are met and recorded.
 
@@ -541,7 +541,7 @@ Realistic total: roughly two and a half to three years to full production. If th
 
 ---
 
-## Part 13 — The system I would build
+## Part 13: The system I would build
 
 ### Specification
 

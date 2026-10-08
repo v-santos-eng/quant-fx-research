@@ -1,4 +1,4 @@
-# Reconciliação Python ↔ MT5 (gate do R-01) — passo a passo
+# Reconciliação Python ↔ MT5 (gate do R-01): passo a passo
 
 Objetivo: rodar a estratégia de referência (Donchian 55/20 H4) no **Strategy Tester**
 do MT5 e comparar com o backtester Python. Gate pré-registrado: **nº de trades ±1** e
@@ -46,7 +46,7 @@ servidor (ver nota B), comparo trade a trade e P&L, e **verifico o gate (±1 / �
 ## Notas que evitam dor de cabeça
 **A. Profundidade de ticks reais.** O "ticks reais" do broker costuma ter histórico
 limitado (poucos anos). Por isso a janela recomendada é recente (2023–2025). Se quiser
-cobrir 2010+, o tester cai para modelagem "1 minuto OHLC" (menos exata) — aí a
+cobrir 2010+, o tester cai para modelagem "1 minuto OHLC" (menos exata), aí a
 reconciliação vira aproximada. Para o gate do R-01, uma janela recente com ticks reais
 é o teste limpo.
 

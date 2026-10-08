@@ -1,4 +1,4 @@
-# Roadmap reformulado — sistema intraday multi-ativo (conta pequena)
+# Roadmap reformulado: sistema intraday multi-ativo (conta pequena)
 
 > Pivô aprovado: **daytrading intraday** (sem overnight → sem swap) sobre um **universo
 > diversificado** de índices, metais e commodities. Conta ~$1.000. A infraestrutura
@@ -25,11 +25,11 @@ correlação mútua. A medir na demo Dukascopy antes de fixar.
 **Começar com ~5-6** de correlação baixa e boa cobertura de sessão, ex.: XAUUSD, US100,
 GER40, USOIL (+ US500). Assim há sempre algo ativo em alguma sessão do dia.
 
-## 3. Capital e posições — a resolução honesta
+## 3. Capital e posições: a resolução honesta
 Com $1.000 você **não** segura 6 posições ao mesmo tempo. A diversificação vem do
 **TEMPO**, não de holdings simultâneas:
 - **1 posição por vez** (talvez 2 se descorrelacionadas e o capital crescer), micro lote 0,01.
-- Você **escaneia o universo** e opera o **melhor setup do momento** — em dias/sessões
+- Você **escaneia o universo** e opera o **melhor setup do momento**, em dias/sessões
   diferentes, instrumentos diferentes. Ao longo de semanas, o resultado é diversificado
   (não fica sempre no mesmo regime), mesmo com 1 posição de cada vez.
 - Regra de correlação: nunca 2 índices US simultâneos (são uma aposta só).
@@ -59,30 +59,30 @@ saída por trailing ATR intraday ou fim de sessão. H1 decisão, M15 refino. Det
 | **6i. Live mínimo** | Micro lote real | Tracking error na banda |
 
 A infra das Fases 0.1-0.5 (config, reprodutibilidade, sanidade, backtester, toolkit de
-validação, reconciliação MT5) **serve toda** — só troca o alvo.
+validação, reconciliação MT5) **serve toda**, só troca o alvo.
 
 ## 7. Abordagem de dados (decisão)
 Os CFDs de índice/commodity têm códigos de símbolo diferentes do datafeed FX da Dukascopy.
 Opções:
-- **A) Ponte MT5 (`copy_rates_range` H1/M15)** — rápido, usa o terminal; profundidade de
+- **A) Ponte MT5 (`copy_rates_range` H1/M15)**: rápido, usa o terminal; profundidade de
   histórico limitada (vimos ~2015+ em barras). Bom para pesquisa inicial.
-- **B) Datafeed/ticks reais** — mais fundo e exato, mas exige descobrir os códigos e o
+- **B) Datafeed/ticks reais**: mais fundo e exato, mas exige descobrir os códigos e o
   formato por instrumento; ticks reais do tester só vão a ~2023 (como no EURUSD).
 Recomendo **começar por A** (barras via ponte) para a pesquisa, e confirmar com ticks
 reais na validação final (Fase 4i/5i).
 
 ## 8. Riscos e honestidade
-- **Frequência × custo** continua sendo o assassino nº 1 — o sistema tem que negociar pouco.
+- **Frequência × custo** continua sendo o assassino nº 1, o sistema tem que negociar pouco.
 - Edges intraday **decaem rápido** → re-teste frequente.
-- **Retorno absoluto pequeno** em $1.000 (bom ano ~ +$100-300) — prova o processo, compõe
+- **Retorno absoluto pequeno** em $1.000 (bom ano ~ +$100-300), prova o processo, compõe
   no tempo. Não é renda.
 - **Dado por instrumento** a auditar (qualidade, gaps de sessão, horários).
 - Intraday exige **execução confiável** (EA + VPS).
-- Ainda **não provado** — melhor fundamentado que o FX intraday, mas passa pelo mesmo
+- Ainda **não provado**, melhor fundamentado que o FX intraday, mas passa pelo mesmo
   crivo (CPCV/DSR/MC). Nada é assumido.
 
 ## 9. Decisões para confirmar antes da Fase 0i
 1. **Universo inicial:** XAUUSD + US100 + GER40 + USOIL + US500? (ajustar a lista)
 2. **Posições simultâneas:** 1 por vez (recomendado p/ $1.000) ou permitir 2 descorrelacionadas?
-3. **Dados:** começar por barras via ponte MT5 (opção A) — ok?
+3. **Dados:** começar por barras via ponte MT5 (opção A), ok?
 4. **Sinal:** ORB/momentum de sessão como primário (recomendado)?

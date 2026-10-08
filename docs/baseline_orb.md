@@ -1,4 +1,4 @@
-# Baseline ORB — spec concreto (Fase 1i) · passo "Arquitetura"
+# Baseline ORB: spec concreto (Fase 1i) · passo "Arquitetura"
 
 > Definição implementável e determinística do baseline intraday. Nada aqui é
 > discricionário. É o alvo a ser codificado APÓS aprovação (passo Discussão→Implementação).
@@ -23,14 +23,14 @@ Por instrumento, a cada dia de sessão:
 2. **Gatilho:** a barra M15 que **fecha** acima do `OR_high` (long) ou abaixo do `OR_low` (short).
    Fechar (não só tocar) evita o whipsaw de pavio.
 3. **Filtro de momentum de sessão (direcional):** só entra se o rompimento concorda com
-   o viés da sessão — preço vs **VWAP da sessão**: long exige `close > VWAP`; short `close < VWAP`.
+   o viés da sessão, preço vs **VWAP da sessão**: long exige `close > VWAP`; short `close < VWAP`.
    Descarta rompimentos contra o fluxo do dia (fonte nº1 de falso ORB).
-4. **Filtro de qualidade do range (anti-overtrade):** só opera se o OR não for degenerado —
+4. **Filtro de qualidade do range (anti-overtrade):** só opera se o OR não for degenerado,
    `OR_width ≥ k · ATR_sessão`. Ranges minúsculos = ruído; ranges enormes = risco/custo ruim.
 5. **Uma entrada por instrumento por sessão** (sem re-entrada no baseline). Poucos trades e bons.
 
 ## 3. Saída (3 caminhos, o que vier primeiro)
-- **Stop:** lado oposto do OR, OU `ATR_MULT · ATR(M15)` — o que for mais apertado.
+- **Stop:** lado oposto do OR, OU `ATR_MULT · ATR(M15)`, o que for mais apertado.
   Risco por trade alvo **$5–10** (0,5–1% de $1.000) define o lote (0,01 fixo no baseline).
 - **Alvo:** `R_MULT · risco` (ex.: 2R). Baseline usa alvo fixo em R; trailing fica p/ uma variante.
 - **Tempo:** fim da sessão → fecha a mercado (flat obrigatório).
@@ -43,13 +43,13 @@ fica para depois do baseline provar edge.
 
 ## 5. Custo aplicado (do `costs.py`, adaptado intraday)
 - **Spread:** `spread_model.json` por instrumento×hora (refeito para os CFDs na Fase 0i)
-  — entra/sai pagando o spread da hora real do fill.
+  - entra/sai pagando o spread da hora real do fill.
 - **Comissão:** round-trip por lote da tabela Dukascopy do instrumento.
 - **Swap = 0** (nunca overnight). **Slippage:** modelado + stress ×2 (real nas Fases 5–6).
 - **Regra de viabilidade (pré-registrada):** o edge bruto por trade tem de superar o custo
-  round-trip **com folga ≥ 2×** — senão a frequência mata (lição da Fase 1 FX).
+  round-trip **com folga ≥ 2×**, senão a frequência mata (lição da Fase 1 FX).
 
-## 6. Parâmetros (defaults propostos — a fixar antes de codar)
+## 6. Parâmetros (defaults propostos: a fixar antes de codar)
 | Símbolo | Papel | Default proposto | Alternativas |
 | :-- | :-- | :-- | :-- |
 | `OR_MIN` | janela do opening range | **30 min** | 15 / 60 |
@@ -61,14 +61,14 @@ fica para depois do baseline provar edge.
 Estes são **hiperparâmetros de pesquisa** → otimizados SÓ dentro do CPCV (nunca no full
 sample), e o nº de combinações testadas alimenta o **DSR** (deflaciona p/ data-mining).
 
-## 7. Gate pré-registrado — Fase 1i (critério ANTES do teste)
+## 7. Gate pré-registrado: Fase 1i (critério ANTES do teste)
 Baseline ORB, 5 instrumentos, todo o histórico baixado (2012→hoje), custo completo:
 - **Sharpe líquido anual > 0** com **PSR > 0,95** (não é sorte).
 - **CPCV:** fração de caminhos com Sharpe > 0 **≥ 60%** (robusto ao path).
 - **DSR > 0** após deflação pelo nº de configs testadas.
 - **MC block-bootstrap:** MaxDD p99 dentro do circuit breaker (RF-12) para $1.000.
 - **Frequência sã:** ≤ ~2 trades/instrumento/dia em média (senão custo domina).
-- **Edge bruto (pré-custo) POSITIVO por instrumento** — a lição decisiva da Fase 1:
+- **Edge bruto (pré-custo) POSITIVO por instrumento**: a lição decisiva da Fase 1:
   sem bruto positivo, nada de gestão/filtro salva. Este é o primeiro corte.
 
 **Falha em qualquer critério → FAIL**, diagnóstico honesto, decisão do usuário. Sem ajuste ad hoc.

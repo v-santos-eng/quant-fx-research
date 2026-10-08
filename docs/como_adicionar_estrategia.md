@@ -1,7 +1,7 @@
 # Como adicionar e testar uma nova estratégia
 
 > Guia prático para o seu eu futuro. A plataforma vet uma ideia com o **mesmo rigor** que
-> reprovou 4 baselines (FX trend, ORB, ORB+ML, reversão — ver `docs/GATES.md`). Seguir este
+> reprovou 4 baselines (FX trend, ORB, ORB+ML, reversão, ver `docs/GATES.md`). Seguir este
 > fluxo garante um veredito honesto, não um resultado curvado. Interpretador: **`.venv`**.
 >
 > Regra-mãe: **hipótese com racional econômico ANTES do teste. Nunca garimpar até "passar".**
@@ -17,14 +17,14 @@ Toda estratégia tem 2 peças, espelhando `research/orb.py` e `research/meanrev.
    a config pelo desempenho **out-of-sample** do CPCV e aplica o **gate 1i** (deflacionado por DSR).
 
 O que já existe e você reusa (NÃO reescreva):
-- `research/orb._session_mask(ts, session_utc)` — fatia as barras para a janela de sessão.
-- `research/orb._mk_trade(...)` — monta um `Trade` com gross/custo (spread par×hora + comissão, swap=0).
-- `research/orb._summary(symbol, trades)` — resumo (n_trades, gross, cost, net, win_rate).
-- `research/indicators.wilder_atr / adx` — indicadores.
-- `research/costs.SymbolCost` + `round_trip_cost_usd` — modelo de custo medido.
-- `research/run_orb_pilot._spread_by_hour(code)` e `CAPITAL` — spread p75 por hora, capital $1.000.
-- `research/run_orb_search.{_sharpe_pp,_daily_returns,ANN}` — helpers de avaliação.
-- `research/cv`, `research/validation`, `research/montecarlo` — CPCV, PSR/DSR, Monte Carlo.
+- `research/orb._session_mask(ts, session_utc)`: fatia as barras para a janela de sessão.
+- `research/orb._mk_trade(...)`: monta um `Trade` com gross/custo (spread par×hora + comissão, swap=0).
+- `research/orb._summary(symbol, trades)`: resumo (n_trades, gross, cost, net, win_rate).
+- `research/indicators.wilder_atr / adx`: indicadores.
+- `research/costs.SymbolCost` + `round_trip_cost_usd`, modelo de custo medido.
+- `research/run_orb_pilot._spread_by_hour(code)` e `CAPITAL`, spread p75 por hora, capital $1.000.
+- `research/run_orb_search.{_sharpe_pp,_daily_returns,ANN}`: helpers de avaliação.
+- `research/cv`, `research/validation`, `research/montecarlo`, CPCV, PSR/DSR, Monte Carlo.
 
 ---
 
@@ -33,14 +33,14 @@ O que já existe e você reusa (NÃO reescreva):
 ### 0. Escreva a hipótese (antes de qualquer código)
 Uma frase de racional econômico a priori: *por que* esse padrão existiria e *por que* não estaria
 arbitrado. Sem isso, você está garimpando. Ex.: "a extensão da abertura reverte porque o excesso
-de fluxo de liquidez se esgota" (foi a 2a — reprovou, mas a hipótese era legítima).
+de fluxo de liquidez se esgota" (foi a 2a, reprovou, mas a hipótese era legítima).
 
-### 1. Engine — `research/<nome>.py`
+### 1. Engine: `research/<nome>.py`
 Copie a estrutura de `meanrev.py` (o exemplo mais enxuto). Contrato inegociável:
 - **Sem look-ahead:** gatilho decidido no **fechamento** da barra `j`; entrada na **abertura** de `j+1`.
 - **Fills intrabar:** stop/alvo checados por `high`/`low` de cada barra (fill honesto).
 - **Flat no fim da sessão** (swap=0). Uma entrada por instrumento por sessão (baseline).
-- Retorne `{"trades": [...], "summary": _summary(...)}` — mesma forma de `orb_trades`.
+- Retorne `{"trades": [...], "summary": _summary(...)}`, mesma forma de `orb_trades`.
 
 Esqueleto mínimo:
 ```python
@@ -65,24 +65,24 @@ def my_trades(bars, session_utc, sc, spread_by_hour, params=MyParams(), lots=0.1
     return {"trades": [asdict(t) for t in trades], "summary": _summary(sc.symbol, trades)}
 ```
 
-### 2. Teste unitário — `tests/test_<nome>.py`
+### 2. Teste unitário: `tests/test_<nome>.py`
 Construa UMA sessão sintética que produz um trade conhecido (assert entry/exit/direção/gross) +
 um caso sem gatilho (assert `[]`). Veja `tests/test_meanrev.py`. Rode:
 ```bash
 .\.venv\Scripts\python.exe -m pytest tests/test_<nome>.py -q
 ```
 
-### 3. Runner de busca — `research/run_<nome>_search.py`
+### 3. Runner de busca: `research/run_<nome>_search.py`
 Copie `run_mr_search.py` e troque o engine + a `GRID`. O protocolo anti-p-hacking (não altere):
 - Seleciona a config pelo **Sharpe OOS médio do CPCV** (`n_groups=8, n_test_groups=2`), NÃO no full sample.
-- **DSR deflaciona por `n_trials = len(grade)`** — corrige a escolha do melhor de N.
+- **DSR deflaciona por `n_trials = len(grade)`**: corrige a escolha do melhor de N.
 - Reporta Sharpe, PSR, % caminhos+ do CPCV, DSR, MaxDD-p99 (Monte Carlo).
 
 ### 4. Rode o gate e interprete
 ```bash
 .\.venv\Scripts\python.exe -m research.run_<nome>_search --instrument GER40 --commission 0
 ```
-- **1º corte — bruto positivo por instrumento.** Se o bruto (pré-custo) é ≤ 0, PARE: nenhum ajuste
+- **1º corte, bruto positivo por instrumento.** Se o bruto (pré-custo) é ≤ 0, PARE: nenhum ajuste
   de custo/risco/ML cria edge onde não há (lição do FX e da reversão). Faça o scan dos 4 CFDs.
 - Comissão = 0 é o caso **otimista** (spread-only). Se falha assim, comissão não salva.
 
@@ -90,16 +90,16 @@ Copie `run_mr_search.py` e troque o engine + a `GRID`. O protocolo anti-p-hackin
 - **ANTES** de rodar: escreva o critério do gate em `docs/GATES.md` (proibido ajustar depois).
 - **DEPOIS**: acrescente o veredito em `docs/GATES.md` e a decisão em `docs/DECISIONS.md`.
   Rode o comando `/checkpoint` para consolidar. O `AttemptRegistry` (SQLite) conta as tentativas
-  para o DSR — cada run já loga; não apague.
+  para o DSR, cada run já loga; não apague.
 
 ### 6. Só se PASSAR o gate
 Aí sim, e só então, escalar (na ordem):
 1. **Meta-label** (padrão `orb_dataset` + `run_metalabel.py`): filtrar para o subconjunto de alta
    qualidade. Exige bater o baseline **com folga**, senão cai (Navalha de Occam).
-2. **Medir a comissão real** do CFD (a atual é 0 otimista) e re-testar — corte final.
+2. **Medir a comissão real** do CFD (a atual é 0 otimista) e re-testar, corte final.
 3. **Reconciliar com o MT5** Strategy Tester (R-01): escrever o EA MQL5 equivalente e bater o
    blotter (padrão `research/reconcile.py`, tolerância pré-registrada).
-4. Só depois: risco/sizing (Fase 2), demo, live — **sempre com humano** (nunca autônomo).
+4. Só depois: risco/sizing (Fase 2), demo, live, **sempre com humano** (nunca autônomo).
 
 ---
 

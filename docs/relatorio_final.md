@@ -1,4 +1,4 @@
-# Relatório de Fechamento — Consistência com US$ 1.000: evidência + o que medimos
+# Relatório de Fechamento: Consistência com US$ 1.000: evidência + o que medimos
 
 > Consolida os dois documentos de evidência (`quant-system-design.md`, `pesquisa-consistencia-
 > trading-algoritmico-1k.md`) com o que a plataforma de fato construiu e mediu (Fases 0–2i, 1d).
@@ -7,7 +7,7 @@
 ## Veredito em uma frase
 Existe um edge real (TSMOM diário), nós o medimos exatamente no nível que a evidência prevê
 (Sharpe ~0,33), mas ele **não gera renda sobre US$ 1.000** (bloqueio aritmético) e **não cruza a
-barra de consistência** (DSR, amostra, breadth) — o valor de US$ 1.000 é ser o **laboratório**
+barra de consistência** (DSR, amostra, breadth), o valor de US$ 1.000 é ser o **laboratório**
 que valida o sistema com opex≈0, não a fonte de retorno.
 
 ## 1. As duas perguntas que US$ 1.000 mistura
@@ -15,7 +15,7 @@ que valida o sistema com opex≈0, não a fonte de retorno.
   realista (Sharpe 0,8, vol 10%) rende ~US$ 80-150/ano sobre US$ 1.000; com opex de US$ 30/mês o
   valor esperado é negativo (breakeven US$ 3,6-7,2k). Alavancar para escapar tem contraevidência
   causal (Heimer-Simsek 2019).
-- **Construir um sistema que sobrevive?** Sim, e US$ 1.000 chega — se **opex≈0** (máquina local +
+- **Construir um sistema que sobrevive?** Sim, e US$ 1.000 chega, se **opex≈0** (máquina local +
   feed do broker via MT5, sem VPS; timeframe diário não precisa de latência). Este é o seu caso.
 
 ## 2. O que a evidência sustenta (síntese dos dois docs)
@@ -46,8 +46,8 @@ mesmo gate pré-registrado, **sem p-hacking**:
 | **1d** | **TSMOM D1 cross-asset** | 🟡 **PARCIAL** | **1º gross+ (0,28); gold+JPY net 0,33** |
 
 Detalhe da 1d (`experiments/tsmom_1d.json`, `tsmom_full_1d.json`):
-- **Gross portfolio Sharpe +0,283** — o sinal TEM edge (1º positivo do projeto).
-- **Universo pleno (8): net −0,97** — o **swap de índice CFD (~15%/ano) é o assassino**.
+- **Gross portfolio Sharpe +0,283**: o sinal TEM edge (1º positivo do projeto).
+- **Universo pleno (8): net −0,97**: o **swap de índice CFD (~15%/ano) é o assassino**.
 - **Gold+JPY (swap benigno): net +0,33**, 4/5 blocos temporais positivos, 79% dos caminhos CPCV
   positivos. **Mas DSR ≈ 0,12 ≪ 0,95, breadth de 2 ativos, e seleção parcialmente ex-post** →
   **não cruza a barra de consistência.**
@@ -66,7 +66,7 @@ Nossa medição independente caiu **em cima** das previsões da evidência:
 | Trend de varejo, universo pequeno → Sharpe 0,3-0,6 | Gold+JPY net **0,33** (em cheio) |
 | Swap de varejo compromete overnight | Swap de índice CFD destruiu o book completo |
 
-A plataforma não só rejeitou o que a evidência diz para rejeitar — ela **mediu o edge real no valor
+A plataforma não só rejeitou o que a evidência diz para rejeitar, ela **mediu o edge real no valor
 exato previsto.** Isso valida a calibração tanto quanto o número.
 
 ## 5. Onde exatamente estamos (honestidade)
@@ -85,7 +85,7 @@ exato previsto.** Isso valida a calibração tanto quanto o número.
 3. **Live como teste de EXECUÇÃO, não de edge.** O que o live valida em semanas é aderência
    fill↔modelo; a expectância leva **anos** e milhares de trades. Tratar o PnL curto como sinal é
    erro de leitura estatística.
-4. **Capital vem depois, por aporte externo** sobre um sistema já validado — não por composição dos
+4. **Capital vem depois, por aporte externo** sobre um sistema já validado, não por composição dos
    US$ 1.000. A transição para retorno relevante é essa, não mágica de estratégia.
 5. **Escala real = futuros.** O proxy swap=0 mostra que o sistema cross-asset completo do doc
    provavelmente vive em micro futuros (sem markup de financiamento). É a rota de médio prazo,
@@ -103,5 +103,5 @@ A pesquisa de estratégia chegou a uma conclusão **bem-fundamentada e convergen
 evidência disponível**, não a um fracasso. Encontramos o edge real (TSMOM), provamos por que o
 intraday não funciona, medimos o resultado no valor exato que a ciência prevê, e mapeamos o único
 caminho que muda a matemática (capital + futuros). O maior valor entregue é uma **plataforma de
-validação rigorosa** — a coisa que, segundo os dois documentos, separa os sobreviventes dos ~90%
+validação rigorosa**, a coisa que, segundo os dois documentos, separa os sobreviventes dos ~90%
 que morrem. Guia de uso: `docs/como_adicionar_estrategia.md`.
